@@ -59,7 +59,6 @@ public class Actor : MonoBehaviour
     private IResponseProvider suggestionsProvider;
     private IRecordingProvider recordingProvider;
     private bool suggestionsOpen;
-    private List<ActorInfo.Exchange> activeExchanges = new();
 
     private XRInteractableSnapVolume snapVolume;
 
@@ -124,7 +123,6 @@ public class Actor : MonoBehaviour
         snapVolume.gameObject.SetActive(false);
         Game.Instance.Player.SetMovementState(false);
 
-        activeExchanges.Clear();
         NextPrompt(true);
     }
 
@@ -135,7 +133,6 @@ public class Actor : MonoBehaviour
     {
         if (!IsInteracting) return;
         interactionState = InteractionState.None;
-        if (activeExchanges.Count > 0) info?.AppendConversation(new ActorInfo.Conversation(activeExchanges));
 
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();
@@ -277,7 +274,6 @@ public class Actor : MonoBehaviour
         dialogueTween.Insert(0f, dialogueReply.DOTypeWriter());
         dialogueTween.AppendInterval(2f);
         ResetToPrompt();
-        dialogueTween.AppendCallback(() => activeExchanges.Add(new ActorInfo.Exchange(currentPrompt, reply)));
         dialogueTween.OnComplete(() => NextPrompt());
     }
 }
