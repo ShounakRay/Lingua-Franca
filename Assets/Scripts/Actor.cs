@@ -24,6 +24,7 @@ public class Actor : MonoBehaviour
     [SerializeField] private float uiFaceSpeed = 1;
     [SerializeField] private RectTransform hoverGreeting;
     [SerializeField] private RectTransform dialogue;
+    [SerializeField] private RectTransform suggestions;
 
     [Header("Dialogue References")]
     [SerializeField] private TextMeshProUGUI dialogueName;
@@ -35,18 +36,27 @@ public class Actor : MonoBehaviour
     [SerializeField] private Button dialogueSuggestionsButton;
     [SerializeField] private Button dialogueLeaveButton;
 
+    [Header("Suggestions References")]
+    [SerializeField] private TextMeshProUGUI suggestionsText;
+
     public bool IsInteracting => interactionState != InteractionState.None;
 
     private InteractionState interactionState;
 
-    private Tween hoverTween;
     private Vector3 hoverInitialScale;
-
-    private Sequence dialogueTween;
     private Vector3 dialogueInitialScale;
+    private Vector3 suggestionsInitialScale;
+
+    private Tween hoverTween;
+    private Sequence dialogueTween;
+    private Sequence suggestionsTween;
+
     private string dialogueLastReply;
+    private string currentPrompt;
     private IResponseProvider responseProvider;
+    private IResponseProvider suggestionsProvider;
     private IRecordingProvider recordingProvider;
+    private bool suggestionsOpen;
 
     private XRInteractableSnapVolume snapVolume;
 
@@ -58,13 +68,18 @@ public class Actor : MonoBehaviour
         dialogueInitialScale = dialogue.localScale;
         dialogue.localScale = Vector3.zero;
 
+        suggestionsInitialScale = suggestions.localScale;
+        suggestions.localScale = Vector3.zero;
+
         responseProvider = GetResponseProvider();
+        suggestionsProvider = GetSuggestionsProvider();
         recordingProvider = Game.Instance.Player.GetRecordingProvider();
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
         interactionState = InteractionState.None;
 
         dialogueLeaveButton.onClick.AddListener(Leave);
+        dialogueSuggestionsButton.onClick.AddListener(() => SetSuggestionsVisibility(!suggestionsOpen));
     }
 
     private void Update()
@@ -82,6 +97,11 @@ public class Actor : MonoBehaviour
     }
 
     public IResponseProvider GetResponseProvider()
+    {
+        return new DummyResponseProvider();
+    }
+
+    public IResponseProvider GetSuggestionsProvider()
     {
         return new DummyResponseProvider();
     }
@@ -114,6 +134,25 @@ public class Actor : MonoBehaviour
         dialogueTween = DOTween.Sequence();
         dialogueTween.Append(dialogue.DOScale(Vector3.zero, 0.3f));
         Game.Instance.Player.SetMovementState(true);
+        SetSuggestionsVisibility(false);
+    }
+
+    private async void SetSuggestionsVisibility(bool visible)
+    {
+        suggestionsTween.Kill();
+        suggestionsTween = DOTween.Sequence();
+        if (visible)
+        {
+            string suggestion = await suggestionsProvider.GetResponse(currentPrompt);
+            suggestionsText.text = suggestion;
+            suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
+            suggestionsTween.Append(suggestionsText.DOTypeWriter());
+        } else
+        {
+            suggestionsTween.Append(suggestions.DOScale(Vector3.zero, 0.3f));
+        }
+
+        suggestionsOpen = visible;
     }
 
     public void HoverEnter()
@@ -134,6 +173,7 @@ public class Actor : MonoBehaviour
     private void NextPrompt(bool isEntry = false)
     {
         interactionState = InteractionState.Prompting;
+        SetSuggestionsVisibility(false);
 
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();
