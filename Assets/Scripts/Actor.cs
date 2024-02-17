@@ -147,11 +147,13 @@ public class Actor : MonoBehaviour
         suggestionsTween = DOTween.Sequence();
         if (visible)
         {
+            // TODO: Implementation Pending
             string suggestion = await suggestionsProvider.GetResponse(currentPrompt);
             suggestionsText.text = suggestion;
             suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
             suggestionsTween.Append(suggestionsText.DOTypeWriter());
-        } else
+        }
+        else
         {
             suggestionsTween.Append(suggestions.DOScale(Vector3.zero, 0.3f));
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RecordingProvider: IRecordingProvider
+public class RecordingProvider : IRecordingProvider
 {
     private AudioClip microphoneClip;
     void StartRecording()
