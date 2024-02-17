@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
@@ -13,6 +14,11 @@ public class Player : MonoBehaviour
     {
         xrOrigin = GetComponentInChildren<XROrigin>();
         moveProvider = GetComponentInChildren<DynamicMoveProvider>();
+    }
+
+    public IRecordingProvider GetRecordingProvider()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,16 +10,23 @@ public class Actor : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Transform uiRoot;
-    [SerializeField] private RectTransform hoverGreeting;
     [SerializeField] private float uiFaceSpeed = 1;
+    [SerializeField] private RectTransform hoverGreeting;
+    [SerializeField] private RectTransform dialogue;
 
     private Tween hoverTween;
     private Vector3 hoverInitialScale;
+
+    private Tween dialogueTween;
+    private Vector3 dialogueInitialScale;
 
     private void Awake()
     {
         hoverInitialScale = hoverGreeting.localScale;
         hoverGreeting.localScale = Vector3.zero;
+
+        dialogueInitialScale = dialogue.localScale;
+        dialogue.localScale = Vector3.zero;
     }
 
     private void Update()
@@ -29,6 +37,11 @@ public class Actor : MonoBehaviour
         float singleStep = uiFaceSpeed * Time.deltaTime;
         Vector3 newDirection = Vector3.RotateTowards(uiRoot.forward, targetDirection, singleStep, 0.0f);
         uiRoot.rotation = Quaternion.LookRotation(newDirection);
+    }
+
+    public IResponseProvider GetResponseProvider()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
