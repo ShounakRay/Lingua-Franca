@@ -270,7 +270,11 @@ MonoBehaviour:
       m_Name: Scale Toggle
       m_Type: 1
       m_ExpectedControlType: 
+<<<<<<< Updated upstream
       m_Id: 0152a02a-8a12-4241-8988-f8f0b3958974
+=======
+      m_Id: f1b8a6ab-bed8-4911-8b22-bd57bde694fe
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -282,7 +286,11 @@ MonoBehaviour:
       m_Name: Scale Delta
       m_Type: 0
       m_ExpectedControlType: Vector2
+<<<<<<< Updated upstream
       m_Id: f0c7a597-a14a-4aa4-9c13-d5976ea320f5
+=======
+      m_Id: ae1de88b-fb81-4341-a5d2-7a6519958218
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -581,7 +589,11 @@ MonoBehaviour:
       m_Name: Scale Toggle
       m_Type: 1
       m_ExpectedControlType: 
+<<<<<<< Updated upstream
       m_Id: caf4bf4f-6fb8-409c-bebb-0f434a5faae5
+=======
+      m_Id: feb1679b-0b11-4980-bf0d-99c09ffeb6b4
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -593,7 +605,11 @@ MonoBehaviour:
       m_Name: Scale Delta
       m_Type: 0
       m_ExpectedControlType: Vector2
+<<<<<<< Updated upstream
       m_Id: 19f635a4-2f83-441a-b814-2ae9fbbd2e28
+=======
+      m_Id: 4bec52e2-0c45-452f-998e-cc5ef72fbc13
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -672,6 +688,7 @@ GameObject:
   - component: {fileID: 1767192439}
   - component: {fileID: 1767192437}
   - component: {fileID: 6232745470614056083}
+  - component: {fileID: 6363560669327204258}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -854,6 +871,53 @@ MonoBehaviour:
       m_Action: Rotation
       m_Flags: 0
     m_Flags: 0
+<<<<<<< Updated upstream
+=======
+--- !u!114 &6363560669327204258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767192433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
+>>>>>>> Stashed changes
 --- !u!1 &58445280694286476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1739,6 +1803,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_Parameters.numCornerVertices
       value: 4
       objectReference: {fileID: 0}
@@ -2034,7 +2102,11 @@ MonoBehaviour:
       m_Name: Scale Toggle
       m_Type: 1
       m_ExpectedControlType: 
+<<<<<<< Updated upstream
       m_Id: e4b3d5d3-3986-4f6d-a69a-e3eed2285809
+=======
+      m_Id: 67d15b08-6376-42a1-b48d-cc402866ef78
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -2046,7 +2118,11 @@ MonoBehaviour:
       m_Name: Scale Delta
       m_Type: 0
       m_ExpectedControlType: Vector2
+<<<<<<< Updated upstream
       m_Id: 94b7d325-b0df-4c3e-ac57-37f97b9454c6
+=======
+      m_Id: f3d19c75-f751-42ad-a118-67f2b30154a7
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -2173,6 +2249,10 @@ PrefabInstance:
     - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_Parameters.numCapVertices
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 2761784063978902504, guid: c1800acf6366418a9b5f610249000331, type: 3}
       propertyPath: m_Parameters.numCornerVertices
@@ -2458,7 +2538,11 @@ MonoBehaviour:
       m_Name: Scale Toggle
       m_Type: 1
       m_ExpectedControlType: 
+<<<<<<< Updated upstream
       m_Id: 642aa0a0-54a9-410b-9775-013fd40ffa87
+=======
+      m_Id: 5a77353c-0189-47b4-bde6-472bb1a40ca5
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -2470,7 +2554,11 @@ MonoBehaviour:
       m_Name: Scale Delta
       m_Type: 0
       m_ExpectedControlType: Vector2
+<<<<<<< Updated upstream
       m_Id: 51a64c4f-eb6b-4706-9836-85a05547d924
+=======
+      m_Id: 97a07d61-3f47-4efc-8eb7-0a76bb1a8e03
+>>>>>>> Stashed changes
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
