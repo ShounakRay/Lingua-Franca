@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,8 @@ public class Actor : MonoBehaviour
     }
 
     [Header("Info")]
-    [SerializeField] private string actorName;
+    [SerializeField] private ActorInfo info;
+    public ActorInfo Info => info;
 
     [Header("UI References")]
     [SerializeField] private Transform uiRoot;
@@ -57,11 +59,14 @@ public class Actor : MonoBehaviour
     private IResponseProvider suggestionsProvider;
     private IRecordingProvider recordingProvider;
     private bool suggestionsOpen;
+    private List<ActorInfo.Exchange> activeExchanges = new();
 
     private XRInteractableSnapVolume snapVolume;
 
     private void Awake()
     {
+        if (info == null) Debug.LogWarning("Actor is missing info!");
+
         hoverInitialScale = hoverGreeting.localScale;
         hoverGreeting.localScale = Vector3.zero;
 
@@ -119,6 +124,7 @@ public class Actor : MonoBehaviour
         snapVolume.gameObject.SetActive(false);
         Game.Instance.Player.SetMovementState(false);
 
+        activeExchanges.Clear();
         NextPrompt(true);
     }
 
@@ -129,6 +135,7 @@ public class Actor : MonoBehaviour
     {
         if (!IsInteracting) return;
         interactionState = InteractionState.None;
+        if (activeExchanges.Count > 0) info?.AppendConversation(new ActorInfo.Conversation(activeExchanges));
 
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();
@@ -270,6 +277,7 @@ public class Actor : MonoBehaviour
         dialogueTween.Insert(0f, dialogueReply.DOTypeWriter());
         dialogueTween.AppendInterval(2f);
         ResetToPrompt();
+        dialogueTween.AppendCallback(() => activeExchanges.Add(new ActorInfo.Exchange(currentPrompt, reply)));
         dialogueTween.OnComplete(() => NextPrompt());
     }
 }

@@ -231,8 +231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 509.46997, y: 0}
+  m_SizeDelta: {x: 958.93994, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &65374429
 MonoBehaviour:
@@ -1226,8 +1226,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 150, y: 0}
+  m_SizeDelta: {x: 240, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &835949484
 GameObject:
@@ -2807,8 +2807,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 509.46997, y: 0}
+  m_SizeDelta: {x: 958.93994, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1382060190
 MonoBehaviour:
@@ -2956,8 +2956,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 509.46997, y: 0}
+  m_SizeDelta: {x: 958.93994, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1494343797
 MonoBehaviour:
@@ -3446,8 +3446,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 519.47, y: 0}
+  m_SizeDelta: {x: 1018.93994, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1711825994
 MonoBehaviour:
@@ -4110,7 +4110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b2800e2416fb554ba75d8ec52bccd52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorName: 
+  info: {fileID: 11400000, guid: cdcb16be50cdff44e8b18842846a3024, type: 2}
   uiRoot: {fileID: 275963101}
   uiFaceSpeed: 1
   hoverGreeting: {fileID: 198406321750576107}
