@@ -9,6 +9,7 @@ public class Objectives : MonoBehaviour
     // Make array of objectives
     static ObjectiveData[] objectives;
     int numObjectives; 
+    public int numCompleted = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -26,25 +27,20 @@ public class Objectives : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // for every objective in the scene, check if it is completed
+        // for every objective in the scene, randomly complete it. 
         for (int i = 0; i < numObjectives; i++)
         {
-            // If the objective is completed, then make the image child of the objective visible. 
-            if (objectives[i].completed)
-            {
-                objectives[i].objective.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-            }
-            if (Random.Range(0, 4000) == 1)
+            if (Random.Range(0, 2000) == 1)
             {
                 Debug.Log("Objective " + objectives[i].objective.name + " is completed");
-                objectives[i].completed = true;
+                objectives[i].Complete();
             }
         }
     }
 }
 
 // Create a struct to hold the objective data
-public struct ObjectiveData
+public class ObjectiveData
 {
     public ObjectiveData(GameObject objective)
     {
@@ -56,4 +52,20 @@ public struct ObjectiveData
     public string objectiveName { get; set; }
     public GameObject objective { get; set; }
 
+    public void Complete()
+    {
+        completed = true;
+        objective.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+    }
+
+    public void Incomplete()
+    {
+        completed = false;
+        objective.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+    }
+
+    public bool IsCompleted()
+    {
+        return completed;
+    }
 }
