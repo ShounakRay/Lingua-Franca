@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Anchor
   - Objective
+  - Climb
   layers:
   - Default
   - TransparentFX
