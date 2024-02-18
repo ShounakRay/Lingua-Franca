@@ -175,9 +175,9 @@ public class Actor : MonoBehaviour
         {
             if (interactionState != InteractionState.ResponseRequested) return;
             string suggestion = await suggestionsProvider.GetResponse(currentPrompt);
-            suggestionsText.text = suggestion;
+            suggestionsText.text = "";
             suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
-            suggestionsTween.Append(suggestionsText.DOTypeWriter());
+            suggestionsTween.Append(suggestionsText.DOTypeWriter(suggestion));
         }
         else
         {
@@ -236,9 +236,9 @@ public class Actor : MonoBehaviour
         {
             string prompt = await responseProvider.GetResponse(dialogueLastReply);
             dialogueTween.Kill();
-            dialoguePrompt.text = prompt;
+            dialoguePrompt.text = "";
             dialogueTween = DOTween.Sequence();
-            dialogueTween.Append(dialoguePrompt.DOTypeWriter());
+            dialogueTween.Append(dialoguePrompt.DOTypeWriter(prompt));
             dialogueTween.AppendInterval(1f);
             dialogueTween.OnComplete(() => NextReply());
         });

@@ -72,9 +72,9 @@ public class StartUILogic : MonoBehaviour
         {
             var t = s.Duration();
             int tmp = i;
-            s.AppendCallback(() => faderText.text = introLines[tmp]);
+            s.AppendCallback(() => faderText.text = "");
             s.Insert(t, faderText.DOFade(1f, 0.3f));
-            s.Insert(t, faderText.DOTypeWriter());
+            s.Insert(t, faderText.DOTypeWriter(introLines[tmp]));
             s.AppendInterval(4f);
             s.Append(faderText.DOFade(0f, 0.3f));
         }
