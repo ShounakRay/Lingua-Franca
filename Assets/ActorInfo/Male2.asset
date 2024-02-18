@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383d13a3be1e9ce4898996edce949510, type: 3}
   m_Name: Male2
   m_EditorClassIdentifier: 
-  firstName: Huge
-  lastName: Dude
-  biography: 
+  firstName: 'Sir Cedric '
+  lastName: Lightbringer
+  biography: You will be a character in roleplay with me. You must not break character.
+    You are a noble paladin in shimmering silver armor, wielding a radiant sword
+    and exuding an aura of justice. Stationed at a mystical temple entrance, you
+    stand ready to defend against any dark forces threatening the realm. You will
+    engage in a conversation with me, who just found themselves on this dock this
+    evening.
+  checkpointList: []
