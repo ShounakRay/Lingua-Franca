@@ -53,8 +53,9 @@ public class Actor : MonoBehaviour
     private Sequence dialogueTween;
     private Sequence suggestionsTween;
 
-    private string dialogueLastReply;
-    private string currentPrompt;
+    // FIXME: Nothing to fix, just a highlight that we changed the type
+    private MetaModelInput dialogueLastReply;
+    private MetaModelInput currentPrompt;
     private IResponseProvider responseProvider;
     private IResponseProvider suggestionsProvider;
     private IRecordingProvider recordingProvider;
@@ -151,7 +152,8 @@ public class Actor : MonoBehaviour
             suggestionsText.text = suggestion;
             suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
             suggestionsTween.Append(suggestionsText.DOTypeWriter());
-        } else
+        }
+        else
         {
             suggestionsTween.Append(suggestions.DOScale(Vector3.zero, 0.3f));
         }
@@ -206,7 +208,12 @@ public class Actor : MonoBehaviour
 
         dialogueTween.OnComplete(async () =>
         {
-            string prompt = await responseProvider.GetResponse(dialogueLastReply);
+            // MetaModelInput _obj_prompt = new(ModelInputState.SYSTEM, new StructuredRequest("sceneInstruction", null, null));
+            // FIXME: Eventually, this must be a SYSTEM call.
+
+            string prompt_text_fmt = "Hello, how are you?";
+            MetaModelInput _obj_prompt = new(ModelInputState.USER, null, prompt_text_fmt);
+            string prompt = await responseProvider.GetResponse(_obj_prompt);
             dialogueTween.Kill();
             dialoguePrompt.text = prompt;
             dialogueTween = DOTween.Sequence();
@@ -254,13 +261,14 @@ public class Actor : MonoBehaviour
         }
 
         interactionState = InteractionState.ResponseInterpreting;
-        string reply = await recordingProvider.StopRecording();
+        string reply_text_fmt = await recordingProvider.StopRecording();
+
 
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();
         dialogueTween.Insert(0f, dialogueVoiceIndicator.DOScaleY(0f, 0.3f));
 
-        if (string.IsNullOrEmpty(reply))
+        if (string.IsNullOrEmpty(reply_text_fmt))
         {
             // If grabbing audio failed, try again
             ResetToPrompt(false);
@@ -269,8 +277,11 @@ public class Actor : MonoBehaviour
         }
 
         dialogueTween.Insert(0f, dialogueReply.DOFade(1, 0.3f));
-        dialogueReply.text = reply;
-        dialogueLastReply = reply;
+
+        // FIXME: Confirm Implementation, Translate reply to `MetaModelInput` and send to `responseProvider.GetResponse`
+        MetaModelInput _obj_reply = new(ModelInputState.USER, null, reply_text_fmt);
+        dialogueReply.text = reply_text_fmt;
+        dialogueLastReply = _obj_reply;
         dialogueTween.Insert(0f, dialogueReply.DOTypeWriter());
         dialogueTween.AppendInterval(2f);
         ResetToPrompt();
