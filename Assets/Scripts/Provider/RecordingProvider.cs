@@ -13,13 +13,10 @@ public class RecordingProvider : MonoBehaviour, IRecordingProvider
     [SerializeField]
     private AppVoiceExperience appVoiceExperience;
 
-    [SerializeField]
     private string partialTranscriptText;
-
     private bool appVoiceActive;
 
     public event Action<string> OnRecordingUpdated;
-
 
     public void RaiseRecordingUpdated(string transcription)
     {

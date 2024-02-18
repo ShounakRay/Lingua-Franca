@@ -58,8 +58,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 526092743639399851}
-  - component: {fileID: 6615221109288587364}
   - component: {fileID: 2745364276002241294}
+  - component: {fileID: 1986796441877082922}
   m_Layer: 0
   m_Name: RecordingProvider
   m_TagString: Untagged
@@ -82,20 +82,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4998649235435974310}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6615221109288587364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8184908406334527414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4156d5726d3e04377b0521da4128fe77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  appVoiceExperience: {fileID: 2745364276002241294}
-  partialTranscriptText: 
 --- !u!114 &2745364276002241294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +187,20 @@ MonoBehaviour:
     preferredActivationOffset: -0.5
   usePlatformServices: 0
   enableConsoleLogging: 0
+--- !u!114 &1986796441877082922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8184908406334527414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de711f9873719a548aaa7d15618f22a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appVoiceExperience: {fileID: 2745364276002241294}
+  partialTranscriptText: 
 --- !u!1001 &8952718806270425503
 PrefabInstance:
   m_ObjectHideFlags: 0

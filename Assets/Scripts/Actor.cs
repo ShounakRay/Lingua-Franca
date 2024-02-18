@@ -88,7 +88,6 @@ public class Actor : MonoBehaviour
         // ResponseSuggestionJoint_Test(cycles: 10);
         // string output = await SuggestionsLLM_Test("Hello, how are you?");
 
-        recordingProvider = Game.Instance.Player.GetRecordingProvider();
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
         interactionState = InteractionState.None;
@@ -234,8 +233,7 @@ public class Actor : MonoBehaviour
 
         dialogueTween.OnComplete(async () =>
         {
-            string prompt_text_fmt = "Hello, how are you?";
-            string prompt = await responseProvider.GetResponse(prompt_text_fmt);
+            string prompt = await responseProvider.GetResponse(dialogueLastReply);
             dialogueTween.Kill();
             dialoguePrompt.text = prompt;
             dialogueTween = DOTween.Sequence();

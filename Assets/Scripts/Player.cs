@@ -13,18 +13,16 @@ public class Player : MonoBehaviour
 
     public XROrigin xrOrigin { get; private set; }
     private DynamicMoveProvider moveProvider;
-    private RecordingProvider recordingProvider;
 
     private void Awake()
     {
         xrOrigin = GetComponentInChildren<XROrigin>();
         moveProvider = GetComponentInChildren<DynamicMoveProvider>();
-        recordingProvider = GetComponentInChildren<RecordingProvider>();
     }
 
     public IRecordingProvider GetRecordingProvider()
     {
-        return recordingProvider;
+        return GetComponentInChildren<RecordingProvider>();
     }
 
     /// <summary>
