@@ -13,8 +13,8 @@ public interface IResponseProvider
 
 internal static class StaticSuite
 {
-    public static readonly string LANGUAGE = "Spanish";
-    public static readonly string ANTI_LANGUAGE = "English";
+    public static readonly string LANGUAGE = "English";
+    public static readonly string ANTI_LANGUAGE = "French";
     public static readonly StructuredRequest EMPTY_INIT_STRUCTURE = null;
     public static readonly List<string> EMPTY_CHECKPOINT_LIST = null;
     public static readonly string CHAT_API_URL = "https://api.together.xyz/v1/chat/completions";
@@ -213,7 +213,7 @@ public class LLM_SuggestionProvider : IResponseProvider
         Debug.Assert(prompt_input != null, "Prompt input is null. This should never happen for suggestions.");
         MetaModelInput prompt_obj = CreateSuggestionGuidance(prompt_input);
         // Debug.Log($"Sending request to LLM API with input: {prompt_obj.JointInstruction}");
-        return await _client.SendRequest(prompt_obj);
+        return await _client.SendRequest(prompt_obj); ;
     }
 }
 
@@ -270,7 +270,31 @@ internal class LLM_API_Client
         // Print the response from the API
         Debug.Log("Response from API:");
         Debug.Log(delivery.Content);
-        return StaticSuite.RespToString(delivery);
+        return await RetryLoop(prompt: StaticSuite.RespToString(delivery), MAX_TIMES: 3, cleaned_pld: cleaned_payload);
+    }
+
+    private async Task<string> RetryLoop(string prompt, int MAX_TIMES, string cleaned_pld)
+    {
+        int repeats = 0;
+        string _output = prompt.ToLower();
+        List<string> optionList = new List<string> { " Please stay in character. It is really important that you don't break the roleplay. Please don't apologize or say sorry." };
+        while (_output.Contains("sorry") || _output.Contains("apologize") || _output.Contains("large language model") || _output.Contains("LLM"))
+        {
+            if (repeats >= MAX_TIMES)
+            {
+              Debug.Log("We got really unlucky");
+              break;
+            }
+            Debug.Log("Retrying");
+            repeats += 1;
+
+            cleaned_pld += optionList[0];
+            RestRequest request = ConstructRequest(cleaned_pld);
+            RestResponse delivery = await _client.PostAsync(request);
+            prompt = StaticSuite.RespToString(delivery);
+            _output = prompt.ToLower();
+        }
+        return prompt;
     }
 }
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383d13a3be1e9ce4898996edce949510, type: 3}
   m_Name: George
   m_EditorClassIdentifier: 
-  firstName: George
-  lastName: Ruth
-  biography: He is really amazing!
+  firstName: Shounak
+  lastName: Ray
+  biography: 'You are a '
+  checkpointList: []
