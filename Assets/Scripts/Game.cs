@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -17,7 +18,19 @@ public class Game : MonoBehaviour
         }
     }
 
-    public Player Player;
+    private Player player;
+    public Player Player
+    {
+        get
+        {
+            if (player != null) return player;
+            player = FindObjectOfType<Player>();
+            return player;
+        }
+    }
+
+    public ObjectiveManager ObjectiveManager;
+    public Language targetLanguage = Language.English; // English by default. changes when game starts
 
     private void Awake()
     {
@@ -27,7 +40,17 @@ public class Game : MonoBehaviour
             return;
         }
 
-        Player = FindObjectOfType<Player>();
         if (Player == null) Debug.LogWarning("A player could not be found in the scene. Did you remember to add one?");
+        
+        ObjectiveManager = FindObjectOfType<ObjectiveManager>();
     }
 }
+
+
+public enum Language
+{
+    English,
+    Spanish,
+    French
+}
+    
