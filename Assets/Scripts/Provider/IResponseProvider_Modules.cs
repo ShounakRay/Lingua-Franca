@@ -120,7 +120,7 @@ public class StructuredParameter
                                int arg_topK = 50,
                                int arg_repetitionPenalty = 1,
                                int arg_n = 1,
-                               string arg_model = "meta-llama/Llama-2-70b-chat-hf",
+                               string arg_model = "togethercomputer/Llama-2-7B-32K-Instruct", // "meta-llama/Llama-2-70b-chat-hf",
                                int arg_maxTokens = 128,
                                List<string> arg_stop = null)
     {
