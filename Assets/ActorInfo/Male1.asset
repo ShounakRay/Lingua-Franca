@@ -22,5 +22,5 @@ MonoBehaviour:
     this evening."
   checkpointList:
   - Ask if I want dragonfruit or apples.
-  - "Mention that if you want to buy fruit, you need special coins from the \u201CPeasant
-    Girl.\u201D"
+  - "If I ask about fruit, tell me that I need special coins from the \u201CPeasant
+    Girl.\u201D "

@@ -21,5 +21,6 @@ MonoBehaviour:
     for deliveries of goods she needs. You will engage in a conversation with me,
     who just found themselves on this dock this evening.
   checkpointList:
-  - Make a really bad joke that makes you sound mentally insane.
-  - 'Tell me to find the secret scroll in return for some special coins. '
+  - "If I tell you that I don\u2019t have money, tell me to find the secret scroll
+    in return for some special coins."
+  - When I speak with you, respond shyly.
