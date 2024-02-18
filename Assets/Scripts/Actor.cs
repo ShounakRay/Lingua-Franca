@@ -78,6 +78,7 @@ public class Actor : MonoBehaviour
         responseProvider = GetResponseProvider();
         suggestionsProvider = GetSuggestionsProvider();
         recordingProvider = Game.Instance.Player.GetRecordingProvider();
+        recordingProvider.OnRecordingUpdated += OnRecordingUpdated;
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
         interactionState = InteractionState.None;
@@ -108,6 +109,13 @@ public class Actor : MonoBehaviour
     public IResponseProvider GetSuggestionsProvider()
     {
         return new DummyResponseProvider();
+    }
+
+
+    private void OnRecordingUpdated(string transcription)
+    {
+        if (interactionState != InteractionState.Responding) return;
+        dialogueReply.text = transcription;
     }
 
     /// <summary>
@@ -235,10 +243,10 @@ public class Actor : MonoBehaviour
     private void BeginReply()
     {
         interactionState = InteractionState.Responding;
+        dialogueReply.text = "";
         recordingProvider.StartRecording();
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();
-        dialogueTween.Insert(0f, dialogueReply.DOFade(0, 0.3f));
         dialogueTween.Insert(0f, dialogueVoiceIndicator.DOScaleY(1f, 0.3f));
         dialogueTween.Insert(0f, dialogueButtonsGroup.DOFade(0f, 0.3f));
         dialogueButtonsGroup.blocksRaycasts = false;
@@ -268,10 +276,8 @@ public class Actor : MonoBehaviour
             return;
         }
 
-        dialogueTween.Insert(0f, dialogueReply.DOFade(1, 0.3f));
         dialogueReply.text = reply;
         dialogueLastReply = reply;
-        dialogueTween.Insert(0f, dialogueReply.DOTypeWriter());
         dialogueTween.AppendInterval(2f);
         ResetToPrompt();
         dialogueTween.OnComplete(() => NextPrompt());

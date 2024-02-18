@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using System;
 
 public interface IRecordingProvider
 {
     void StartRecording();
+    event Action<string> OnRecordingUpdated;
     Task<string> StopRecording();
 }
 
@@ -41,6 +43,8 @@ public class DummyRecordingProvider : IRecordingProvider
 
     private float startTime;
 
+    public event Action<string> OnRecordingUpdated;
+
     public void StartRecording() 
     {
         startTime = Time.time;
@@ -49,7 +53,7 @@ public class DummyRecordingProvider : IRecordingProvider
     public async Task<string> StopRecording()
     {
         if (Time.time - startTime < 1f) return null; 
-        await Task.Delay(Random.Range(100, 1000)); // Simulate latency
-        return responses[Random.Range(0, responses.Length)];
+        await Task.Delay(UnityEngine.Random.Range(100, 1000)); // Simulate latency
+        return responses[UnityEngine.Random.Range(0, responses.Length)];
     }
 }
