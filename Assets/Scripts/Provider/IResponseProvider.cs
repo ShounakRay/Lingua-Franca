@@ -13,8 +13,19 @@ public interface IResponseProvider
 
 internal static class StaticSuite
 {
-    public static readonly string LANGUAGE = "English";
-    public static readonly string ANTI_LANGUAGE = "French";
+    private static string GetLanguage(Language lang)
+    {
+        return lang switch
+        {
+            Language.English => "English",
+            Language.Spanish => "Spanish",
+            Language.French => "French",
+            _ => "English"
+        };
+    }
+
+    public static string LANGUAGE => GetLanguage(Game.Instance.targetLanguage);
+    public static readonly string ANTI_LANGUAGE = GetLanguage(Language.English);
     public static readonly StructuredRequest EMPTY_INIT_STRUCTURE = null;
     public static readonly List<string> EMPTY_CHECKPOINT_LIST = null;
     public static readonly string CHAT_API_URL = "https://api.together.xyz/v1/chat/completions";

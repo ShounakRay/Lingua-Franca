@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
     }
 
     public ObjectiveManager ObjectiveManager;
-    public Language targetLanguage = Language.English; // English by default. changes when game starts
+    public Language targetLanguage = Language.Spanish;
 
     private void Awake()
     {

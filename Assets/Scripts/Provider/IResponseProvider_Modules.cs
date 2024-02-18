@@ -115,7 +115,7 @@ public class StructuredParameter
     public int RepetitionPenalty { get; set; }
     public int N { get; set; }
 
-    public StructuredParameter(double arg_temperature = 0.7,
+    public StructuredParameter(double arg_temperature = 0.4,
                                double arg_topP = 0.7,
                                int arg_topK = 50,
                                int arg_repetitionPenalty = 1,

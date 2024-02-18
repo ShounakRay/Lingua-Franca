@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.github-glitchenzo.nugetforunity": {
+      "version": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "75f68222d0a4bd2b468dbf3e6a17a191d28041ab"
+    },
     "com.unity.animation.rigging": {
       "version": "1.2.1",
       "depth": 0,
@@ -9,13 +16,6 @@
         "com.unity.test-framework": "1.1.24"
       },
       "url": "https://packages.unity.com"
-    },
-    "com.github-glitchenzo.nugetforunity": {
-      "version": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "75f68222d0a4bd2b468dbf3e6a17a191d28041ab"
     },
     "com.unity.burst": {
       "version": "1.8.12",
@@ -149,6 +149,15 @@
       "source": "registry",
       "dependencies": {
         "com.unity.modules.physics": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.recorder": {
+      "version": "4.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.timeline": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

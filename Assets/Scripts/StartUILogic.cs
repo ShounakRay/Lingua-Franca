@@ -25,6 +25,8 @@ public class StartUILogic : MonoBehaviour
 
     void Start()
     {
+        faderCg.alpha = 0;
+        faderText.alpha = 0;
         menuCg.alpha = 0f;
         menuCg.blocksRaycasts = true;
         menuCg.DOFade(1f, 4f);
@@ -75,7 +77,7 @@ public class StartUILogic : MonoBehaviour
             s.AppendCallback(() => faderText.text = "");
             s.Insert(t, faderText.DOFade(1f, 0.3f));
             s.Insert(t, faderText.DOTypeWriter(introLines[tmp]));
-            s.AppendInterval(4f);
+            s.AppendInterval(2f);
             s.Append(faderText.DOFade(0f, 0.3f));
         }
 
