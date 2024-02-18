@@ -27,6 +27,7 @@ public class Actor : MonoBehaviour
     [SerializeField] private RectTransform hoverGreeting;
     [SerializeField] private RectTransform dialogue;
     [SerializeField] private RectTransform suggestions;
+    [SerializeField] private TextMeshProUGUI hoverName;
 
     [Header("Dialogue References")]
     [SerializeField] private TextMeshProUGUI dialogueName;
@@ -77,14 +78,21 @@ public class Actor : MonoBehaviour
 
         responseProvider = GetResponseProvider();
         suggestionsProvider = GetSuggestionsProvider();
-        recordingProvider = Game.Instance.Player.GetRecordingProvider();
-        recordingProvider.OnRecordingUpdated += OnRecordingUpdated;
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
         interactionState = InteractionState.None;
 
         dialogueLeaveButton.onClick.AddListener(Leave);
         dialogueSuggestionsButton.onClick.AddListener(() => SetSuggestionsVisibility(!suggestionsOpen));
+
+        dialogueName.text = info.FirstName;
+        hoverName.text = info.FirstName;
+    }
+
+    private void Start()
+    {
+        recordingProvider = Game.Instance.Player.GetRecordingProvider();
+        recordingProvider.OnRecordingUpdated += OnRecordingUpdated;
     }
 
     private void Update()

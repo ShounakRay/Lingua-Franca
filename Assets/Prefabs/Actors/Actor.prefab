@@ -2619,6 +2619,7 @@ MonoBehaviour:
   hoverGreeting: {fileID: 2120948695585467503}
   dialogue: {fileID: 7270679738953756053}
   suggestions: {fileID: 6815037252603180711}
+  hoverName: {fileID: 5358486061218461407}
   dialogueName: {fileID: 5427947591091503226}
   dialogueDivider: {fileID: 704254543326837898}
   dialoguePrompt: {fileID: 8152354522529244154}
