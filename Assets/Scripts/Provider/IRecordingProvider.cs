@@ -1,16 +1,27 @@
+using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
-
 public interface IRecordingProvider
 {
     void StartRecording();
+
+    event Action<string> OnRecordingUpdated;
+
     Task<string> StopRecording();
 }
 
+
 public class DummyRecordingProvider : IRecordingProvider
 {
+    public event Action<string> OnRecordingUpdated;
+
+    public void RaiseDummyEvent(string transcription)
+    {
+        OnRecordingUpdated?.Invoke(transcription);
+    }
+
     private static string[] responses = {
         "Hey! I'm doing great, thanks for asking!",
         "Good morning! I hope you're having a fantastic day!",
@@ -49,7 +60,8 @@ public class DummyRecordingProvider : IRecordingProvider
     public async Task<string> StopRecording()
     {
         if (Time.time - startTime < 1f) return null; 
-        await Task.Delay(Random.Range(100, 1000)); // Simulate latency
-        return responses[Random.Range(0, responses.Length)];
+        await Task.Delay(UnityEngine.Random.Range(100, 1000)); // Simulate latency
+        RaiseDummyEvent("Random response");
+        return responses[UnityEngine.Random.Range(0, responses.Length)];
     }
 }

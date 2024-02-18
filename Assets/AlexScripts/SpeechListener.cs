@@ -11,48 +11,69 @@ public class SpeechListener : MonoBehaviour
     // I have another script file that has the SavWav class. I want to access that class's static variables here. How do i do it.
     private AudioClip microphoneClip;
     private string microphoneName;
+
+    public AudioSource audio;
     
-    public string savePath = "/Users/katie/Documents/UnityProjects/Treehacks2024VR/Assets/SavedAudio.wav";
+    public string filename = "Treehacks2024SavedAudio.wav";
     // Use the savewav class to save the audio to a file
     // Start is called before the first frame update
+
     void Start()
     {
-        microphoneName = Microphone.devices[0];        
-        Debug.Log("Microphone name: " + microphoneName);
-
+        microphoneName = Microphone.devices[0];
     }
 
     // Update is called once per frame
     void Update()
     {
-        /* TODO: make the activation for the microphone
-            an in game button press */
-        // Debug.Log("How about here?");
+
     }
 
     public void StartRecording()
     {
         microphoneClip = Microphone.Start(microphoneName, true, 60, 44100);
+        Debug.Log ("Recording started");
         if (microphoneClip == null)
         {
             Debug.Log("Microphone clip is null");
         }
     }
 
-    public void StopRecordingAndPlayAudio()
+    public void StopRecordingAndSave()
     {
         Microphone.End(microphoneName); // stop the recording
         SavWav.TrimSilence(microphoneClip, 0.001f);
-        SavWav.Save("/Users/katie/Documents/UnityProjects/Treehacks2024VR/Assets/SavedAudio.wav", microphoneClip);
-        // StartCoroutine(PlayAudioForUser());
+        SavWav.Save(filename, microphoneClip);
+        Debug.Log("Recording stopped... Saving audio to file.");
     }
 
-    IEnumerator PlayAudioForUser() {
+    public string ConvertSpeechToText()
+    {
+        string response = "";
+        
+        StartCoroutine(SpeechToText.PostRequest((jsonResponse) =>
+        {
+            if (jsonResponse != null)
+            {
+                // Handle the JSON response
+                Debug.Log("Received JSON response: " + jsonResponse);
+            }
+            else
+            {
+                // Handle the error
+                Debug.LogError("Failed to receive JSON response");
+            }
+        }, filename));
+
+        return response;
+    }
+
+    public void PlayAudioForUser() {
         AudioSource audio = GetComponent<AudioSource>();
-        audio.Play();
-        yield return new WaitForSeconds(audio.clip.length);
-        audio.clip = microphoneClip;
-        audio.Play();
+        if (audio == null) {
+            Debug.Log("Audio source is null");
+        }
+        audio.PlayOneShot(microphoneClip);
     }
 
 }
