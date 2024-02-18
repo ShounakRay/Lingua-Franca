@@ -129,8 +129,7 @@ public class LLM_ResponseProvider : IResponseProvider
 
 
         List<string> instruction_2 = actor_info.CheckpointList;
-        string instruction_3 = $@"Now for some very important guidelines for the
-        roleplay coming up, please follow carefully. Remember you're having an
+        string instruction_3 = $@"Remember you're having an
         interactive conversation with me, so make sure you sound natural and
         realistic. Don't be too sophisticated, you should sound organic. You
         must only respond in {StaticSuite.LANGUAGE}. You are NOT allowed to respond in
@@ -148,7 +147,7 @@ public class LLM_ResponseProvider : IResponseProvider
             arg_checkpointList: instruction_2,
             arg_constraintInstruction: instruction_3
         );
-        string init_request = "Start with the first checkpoint. You begin by asking me a question.";
+        string init_request = "Start with the first checkpoint and then the second. You begin by asking me a question.";
         // Get MetaModelInput object
         MetaModelInput init_input = new(
             arg_state: init_state,
@@ -201,7 +200,7 @@ public class LLM_SuggestionProvider : IResponseProvider
         const ModelInputState conv_state = ModelInputState.USER;
         string instruction_1 = $"Here is a prompt: \"{prompt_input}\".";
         List<string> instruction_2 = StaticSuite.EMPTY_CHECKPOINT_LIST;
-        string instruction_3 = $"Please provide a suggestion for a possible response in {StaticSuite.LANGUAGE}. Please ensure that the response is natural and organic. Do not include any special characters or emojis in your output. Your suggestion should be fairly short. It should also strictly be a single sentence.";
+        string instruction_3 = $"Please provide a suggestion for a possible response in {StaticSuite.LANGUAGE}. Please ensure that the response is natural and organic. Do not include any special characters or emojis in your output. You must only respond in {StaticSuite.LANGUAGE}. You are NOT allowed to respond in {StaticSuite.ANTI_LANGUAGE}, nor should it be part of your language at all. The end of each {StaticSuite.LANGUAGE} should end with this special sequence of characters: '{StaticSuite.FINISH_TOKEN}'. It should also strictly be a single short sentence.";
         StructuredRequest init_instructions = new(
             arg_sceneInstruction: instruction_1,
             arg_checkpointList: instruction_2,
@@ -293,8 +292,8 @@ internal class LLM_API_Client
         {
             if (repeats >= MAX_TIMES)
             {
-              Debug.Log("We got really unlucky");
-              break;
+                Debug.Log("We got really unlucky");
+                break;
             }
             Debug.Log("Retrying");
             repeats += 1;
