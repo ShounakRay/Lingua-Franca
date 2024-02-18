@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Tutorials.Core.Editor;
+// using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 
 public class ObjectiveManager : MonoBehaviour
@@ -10,7 +10,7 @@ public class ObjectiveManager : MonoBehaviour
     
     // The objective prefab
     public GameObject objectivePrefab;
-    public GameObject objectiveBox;
+    public GameObject objectiveWrapper;
 
     
     public int numObjectives = 0; 
@@ -20,8 +20,6 @@ public class ObjectiveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        objectiveBox.SetActive(false);
-        
     }
 
     // Update is called once per frame
@@ -32,27 +30,24 @@ public class ObjectiveManager : MonoBehaviour
         {
             if (Random.Range(0, 2000) == 1)
             {
-                Debug.Log("Objective " + objectives[i].objective.name + " is completed");
-                objectives[i].Complete();
+                completeObjective(objectives[i].objectiveName);
             }
         }
     }
 
     public void AddObjective(string name, string description)
     {
+        if (numObjectives == 0)
+            objectiveWrapper.GetComponent<CanvasGroup>().alpha = 1;
+
+        Debug.Log("Adding objective " + name + " to the objective box");
         // Create a new objective
-        GameObject newObjective = Instantiate(objectivePrefab, objectiveBox.transform);
+        GameObject newObjective = Instantiate(objectivePrefab, objectiveWrapper.transform);
         newObjective.name = name;
-        Debug.Log("Adding objective " + newObjective.name + " to the objective box");
         // Write out the child
         newObjective.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = description;
         objectives.Add(new Objective(newObjective));
         numObjectives++;
-        if (numObjectives == 1)
-        {
-            Debug.Log("First objective added");
-            objectiveBox.SetActive(true);
-        }
     }
 
     public void completeObjective(string name)
@@ -61,13 +56,23 @@ public class ObjectiveManager : MonoBehaviour
         {
             if (objectives[i].objectiveName == name)
             {
-                objectives[i].Complete();
-                numCompleted++;
+                if (objectives[i].IsCompleted())
+                {
+                    Debug.Log("Objective " + name + " is already completed");
+                    return;
+                } else {
+                    objectives[i].Complete();
+                    numCompleted++;
+                }
             }
         }
+        // pirnt number of objectives completed
+        Debug.Log("Number of objectives completed: " + numCompleted);
+        Debug.Log("Number of objectives: " + numObjectives);
         if (numObjectives == numCompleted)
         {
             Debug.Log("All objectives are completed");
+            //TODO: Find some way to celebrate the completion of all objectives
         }
     }
 }

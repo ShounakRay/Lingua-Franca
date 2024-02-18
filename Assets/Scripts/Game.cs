@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -31,6 +32,8 @@ public class Game : MonoBehaviour
 
         Player = FindObjectOfType<Player>();
         if (Player == null) Debug.LogWarning("A player could not be found in the scene. Did you remember to add one?");
+        
+        ObjectiveManager = FindObjectOfType<ObjectiveManager>();
     }
 }
 

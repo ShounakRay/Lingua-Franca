@@ -12,7 +12,6 @@ public class StartUILogic : MonoBehaviour
     public GameObject startButton;
     public GameObject selectionWarning;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -21,18 +20,27 @@ public class StartUILogic : MonoBehaviour
         spanishToggle.GetComponent<Toggle>().onValueChanged.AddListener(ClickSpanish);
         frenchToggle.GetComponent<Toggle>().onValueChanged.AddListener(ClickFrench);
         startButton.GetComponent<Button>().onClick.AddListener(ClickStart);
+        // ClickFrench(true);
+        // ClickSpanish(false);
+        // ClickStart();
     }
 
     private void ClickSpanish(bool toggled)
     {
         if (toggled)
+        {
             Game.Instance.targetLanguage = Language.Spanish;
+            Debug.Log("Spanish toggled");
+        }
     }
 
     private void ClickFrench(bool toggled)
     {
         if (toggled)
+        {
             Game.Instance.targetLanguage = Language.French;
+            Debug.Log("French toggled");
+        }
     }
 
     // Update is called once per frame
@@ -43,20 +51,18 @@ public class StartUILogic : MonoBehaviour
     private void ClickStart()
     {
         if (Game.Instance.targetLanguage == Language.English)
+        {
             selectionWarning.SetActive(true);
+            Debug.Log("English selected");
+        }
         else
         {
             Debug.Log("Starting game with language: " + Game.Instance.targetLanguage);
             gameObject.SetActive(false);
             if (Game.Instance.Player)
                 Game.Instance.Player.SetMovementState(true);
-
             Game.Instance.ObjectiveManager.AddObjective("eat", "eat a sandwhich");
             Game.Instance.ObjectiveManager.AddObjective("drink", "drink a glass of water");
-            Game.Instance.ObjectiveManager.AddObjective("sleep", "sleep for 8 hours");
-            Game.Instance.ObjectiveManager.AddObjective("exercise", "exercise for 30 minutes");
-            /* Either we can call a funciton here to start the game, or we can put all of the logic here.
-            This includes things like spawning the objectives */
         }
     }
 }
