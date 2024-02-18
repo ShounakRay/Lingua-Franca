@@ -8,6 +8,14 @@ public class EntryPoint : MonoBehaviour
 {
     private void Start()
     {
-        GetComponent<CanvasGroup>().DOFade(0f, 3f);
+        Game.Instance.Player.SetMovementState(false);
+        Game.Instance.Player.SetRotationState(false);
+        var cg = GetComponent<CanvasGroup>();
+        cg.alpha = 1f;
+        cg.DOFade(0f, 4f).SetEase(Ease.InQuad).OnComplete(() =>
+        {
+            Game.Instance.Player.SetMovementState(true);
+            Game.Instance.Player.SetRotationState(true);
+        });
     }
 }

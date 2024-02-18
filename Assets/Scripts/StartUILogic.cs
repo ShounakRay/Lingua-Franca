@@ -27,7 +27,7 @@ public class StartUILogic : MonoBehaviour
     {
         menuCg.alpha = 0f;
         menuCg.blocksRaycasts = true;
-        menuCg.DOFade(1f, 6f);
+        menuCg.DOFade(1f, 4f);
 
         startButton.alpha = 0f;
         startButton.blocksRaycasts = false;

@@ -346,7 +346,7 @@ MonoBehaviour:
   menuCg: {fileID: 28015720}
   faderCg: {fileID: 438830747}
   faderText: {fileID: 1177215040}
-  gameScene: 
+  gameScene: Assets/Scenes/Dock.unity
   introLines:
   - You have lost yourself in foreign lands.
   - You must learn a new language to find a way out!
