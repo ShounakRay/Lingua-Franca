@@ -18,6 +18,8 @@ public class Game : MonoBehaviour
     }
 
     public Player Player;
+    public ObjectiveManager ObjectiveManager;
+    public Language targetLanguage = Language.English; // English by default. changes when game starts
 
     private void Awake()
     {
@@ -31,3 +33,12 @@ public class Game : MonoBehaviour
         if (Player == null) Debug.LogWarning("A player could not be found in the scene. Did you remember to add one?");
     }
 }
+
+
+public enum Language
+{
+    English,
+    Spanish,
+    French
+}
+    

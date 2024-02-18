@@ -1,27 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Tutorials.Core.Editor;
 using UnityEngine;
 
-public class Objectives : MonoBehaviour
+public class ObjectiveManager : MonoBehaviour
 {   
     // The objectives are all stored in a box. get that box to count number of objectives in it.
+    // public GameObject objectiveContainer;
+    
+    // The objective prefab
+    public GameObject objectivePrefab;
     public GameObject objectiveBox;
-    // Make array of objectives
-    static ObjectiveData[] objectives;
-    int numObjectives; 
+
+    
+    public int numObjectives = 0; 
     public int numCompleted = 0;
+    private List<Objective> objectives = new List<Objective>();
     
     // Start is called before the first frame update
     void Start()
     {
-        numObjectives = objectiveBox.transform.childCount;
-        objectives = new ObjectiveData[numObjectives];
-
-        for (int i = 0; i < numObjectives; i++)
-        {
-            objectives[i] = new ObjectiveData(objectiveBox.transform.GetChild(i).gameObject);
-            objectives[i].objective.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
-        }  
+        objectiveBox.SetActive(false);
+        
     }
 
     // Update is called once per frame
@@ -37,12 +37,45 @@ public class Objectives : MonoBehaviour
             }
         }
     }
+
+    public void AddObjective(string name, string description)
+    {
+        // Create a new objective
+        GameObject newObjective = Instantiate(objectivePrefab, objectiveBox.transform);
+        newObjective.name = name;
+        Debug.Log("Adding objective " + newObjective.name + " to the objective box");
+        // Write out the child
+        newObjective.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = description;
+        objectives.Add(new Objective(newObjective));
+        numObjectives++;
+        if (numObjectives == 1)
+        {
+            Debug.Log("First objective added");
+            objectiveBox.SetActive(true);
+        }
+    }
+
+    public void completeObjective(string name)
+    {
+        for (int i = 0; i < numObjectives; i++)
+        {
+            if (objectives[i].objectiveName == name)
+            {
+                objectives[i].Complete();
+                numCompleted++;
+            }
+        }
+        if (numObjectives == numCompleted)
+        {
+            Debug.Log("All objectives are completed");
+        }
+    }
 }
 
 // Create a struct to hold the objective data
-public class ObjectiveData
+public class Objective
 {
-    public ObjectiveData(GameObject objective)
+    public Objective(GameObject objective)
     {
         completed = false;
         objectiveName = objective.name;
