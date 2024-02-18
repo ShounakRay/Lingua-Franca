@@ -71,6 +71,8 @@ MonoBehaviour:
   turnSpeed: 0.75
   playerNearRadius: 4
   turnAnimateThreshold: 0.85
+  idleTriggerMin: 5
+  idleTriggerMax: 10
 --- !u!1001 &2765683448571279303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -536,7 +538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8363300123772300296, guid: a6885d9d2a2f8534ca8432b7171632a2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.1957655
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 8363300123772300296, guid: a6885d9d2a2f8534ca8432b7171632a2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -544,7 +546,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8363300123772300296, guid: a6885d9d2a2f8534ca8432b7171632a2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.7395
+      value: 46.49
       objectReference: {fileID: 0}
     - target: {fileID: 8363300123772300296, guid: a6885d9d2a2f8534ca8432b7171632a2, type: 3}
       propertyPath: m_LocalRotation.w

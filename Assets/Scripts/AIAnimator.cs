@@ -8,8 +8,13 @@ public class AIAnimator : MonoBehaviour
     [SerializeField] private float turnSpeed = 1;
     [SerializeField] private float playerNearRadius = 2;
     [SerializeField, Range(0, 1)] private float turnAnimateThreshold = 0.8f;
+    [SerializeField] private float idleTriggerMin = 5f;
+    [SerializeField] private float idleTriggerMax = 30f;
+
+    private float idleRemainingSeconds = 0f;
 
     private const string kTurnParameter = "TurnDirection";
+    private static readonly string[] kIdleTriggers = new[] { "Idle1", "Idle2", "Idle3", "Idle4" };
 
     private void Update()
     {
@@ -33,6 +38,14 @@ public class AIAnimator : MonoBehaviour
             else animator.SetInteger(kTurnParameter, 0);
         }
 
+        idleRemainingSeconds -= Time.deltaTime;
+        if (idleRemainingSeconds <= 0) OnIdleTrigger();
+    }
 
+    private void OnIdleTrigger()
+    {
+        idleRemainingSeconds = Random.Range(idleTriggerMin, idleTriggerMax);
+        var trigger = kIdleTriggers[Random.Range(0, kIdleTriggers.Length)];
+        animator.SetTrigger(trigger);
     }
 }
