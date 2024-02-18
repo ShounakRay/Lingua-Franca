@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Threading.Tasks;
 
 public class Actor : MonoBehaviour
 {
@@ -53,9 +54,8 @@ public class Actor : MonoBehaviour
     private Sequence dialogueTween;
     private Sequence suggestionsTween;
 
-    // FIXME: Nothing to fix, just a highlight that we changed the type
-    private MetaModelInput dialogueLastReply;
-    private MetaModelInput currentPrompt;
+    private string dialogueLastReply;
+    private string currentPrompt;
     private IResponseProvider responseProvider;
     private IResponseProvider suggestionsProvider;
     private IRecordingProvider recordingProvider;
@@ -63,8 +63,9 @@ public class Actor : MonoBehaviour
 
     private XRInteractableSnapVolume snapVolume;
 
-    private void Awake()
+    private async void Awake()
     {
+        Debug.Log("[Actor.Awake] Inside Awake Functions");
         if (info == null) Debug.LogWarning("Actor is missing info!");
 
         hoverInitialScale = hoverGreeting.localScale;
@@ -78,6 +79,14 @@ public class Actor : MonoBehaviour
 
         responseProvider = GetResponseProvider();
         suggestionsProvider = GetSuggestionsProvider();
+
+        // LLM_ResponseProvider provider = new(info, null);
+        // Debug.Log(await ResponseLLM_Test(provider, null));
+        // Debug.Log(await ResponseLLM_Test(provider, "Tell me about the taj mahal."));
+        // Debug.Log(await SuggestionsLLM_Test("Hello, how are you?"));
+        // ResponseSuggestionJoint_Test(cycles: 10);
+        // string output = await SuggestionsLLM_Test("Hello, how are you?");
+
         recordingProvider = Game.Instance.Player.GetRecordingProvider();
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
@@ -103,17 +112,14 @@ public class Actor : MonoBehaviour
 
     public IResponseProvider GetResponseProvider()
     {
-        return new DummyResponseProvider();
+        return new LLM_ResponseProvider(actor_info: info, parameters: null);
     }
 
     public IResponseProvider GetSuggestionsProvider()
     {
-        return new DummyResponseProvider();
+        return new LLM_SuggestionProvider(parameters: null);
     }
 
-    /// <summary>
-    /// Begins an interaction with the actor.
-    /// </summary>
     public void Interact()
     {
         if (IsInteracting) return;
@@ -208,12 +214,8 @@ public class Actor : MonoBehaviour
 
         dialogueTween.OnComplete(async () =>
         {
-            // MetaModelInput _obj_prompt = new(ModelInputState.SYSTEM, new StructuredRequest("sceneInstruction", null, null));
-            // FIXME: Eventually, this must be a SYSTEM call.
-
             string prompt_text_fmt = "Hello, how are you?";
-            MetaModelInput _obj_prompt = new(ModelInputState.USER, null, prompt_text_fmt);
-            string prompt = await responseProvider.GetResponse(_obj_prompt);
+            string prompt = await responseProvider.GetResponse(prompt_text_fmt);
             dialogueTween.Kill();
             dialoguePrompt.text = prompt;
             dialogueTween = DOTween.Sequence();
@@ -278,10 +280,8 @@ public class Actor : MonoBehaviour
 
         dialogueTween.Insert(0f, dialogueReply.DOFade(1, 0.3f));
 
-        // FIXME: Confirm Implementation, Translate reply to `MetaModelInput` and send to `responseProvider.GetResponse`
-        MetaModelInput _obj_reply = new(ModelInputState.USER, null, reply_text_fmt);
         dialogueReply.text = reply_text_fmt;
-        dialogueLastReply = _obj_reply;
+        dialogueLastReply = reply_text_fmt;
         dialogueTween.Insert(0f, dialogueReply.DOTypeWriter());
         dialogueTween.AppendInterval(2f);
         ResetToPrompt();
