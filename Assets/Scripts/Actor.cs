@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
+using System.Threading.Tasks;
 
 public class Actor : MonoBehaviour
 {
@@ -63,8 +64,9 @@ public class Actor : MonoBehaviour
 
     private XRInteractableSnapVolume snapVolume;
 
-    private void Awake()
+    private async void Awake()
     {
+        Debug.Log("[Actor.Awake] Inside Awake Functions");
         if (info == null) Debug.LogWarning("Actor is missing info!");
 
         hoverInitialScale = hoverGreeting.localScale;
@@ -78,6 +80,15 @@ public class Actor : MonoBehaviour
 
         responseProvider = GetResponseProvider();
         suggestionsProvider = GetSuggestionsProvider();
+
+        // LLM_ResponseProvider provider = new(info, null);
+        // Debug.Log(await ResponseLLM_Test(provider, null));
+        // Debug.Log(await ResponseLLM_Test(provider, "Tell me about the taj mahal."));
+        // Debug.Log(await SuggestionsLLM_Test("Hello, how are you?"));
+        // ResponseSuggestionJoint_Test(cycles: 10);
+        // string output = await SuggestionsLLM_Test("Hello, how are you?");
+
+        recordingProvider = Game.Instance.Player.GetRecordingProvider();
         snapVolume = GetComponentInChildren<XRInteractableSnapVolume>();
 
         interactionState = InteractionState.None;
@@ -111,12 +122,12 @@ public class Actor : MonoBehaviour
 
     public IResponseProvider GetResponseProvider()
     {
-        return new DummyResponseProvider();
+        return new LLM_ResponseProvider(actor_info: info, parameters: null);
     }
 
     public IResponseProvider GetSuggestionsProvider()
     {
-        return new DummyResponseProvider();
+        return new LLM_SuggestionProvider(parameters: null);
     }
 
 
@@ -167,7 +178,8 @@ public class Actor : MonoBehaviour
             suggestionsText.text = suggestion;
             suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
             suggestionsTween.Append(suggestionsText.DOTypeWriter());
-        } else
+        }
+        else
         {
             suggestionsTween.Append(suggestions.DOScale(Vector3.zero, 0.3f));
         }
@@ -222,7 +234,8 @@ public class Actor : MonoBehaviour
 
         dialogueTween.OnComplete(async () =>
         {
-            string prompt = await responseProvider.GetResponse(dialogueLastReply);
+            string prompt_text_fmt = "Hello, how are you?";
+            string prompt = await responseProvider.GetResponse(prompt_text_fmt);
             dialogueTween.Kill();
             dialoguePrompt.text = prompt;
             dialogueTween = DOTween.Sequence();
@@ -271,6 +284,7 @@ public class Actor : MonoBehaviour
 
         interactionState = InteractionState.ResponseInterpreting;
         string reply = await recordingProvider.StopRecording();
+
 
         dialogueTween.Kill();
         dialogueTween = DOTween.Sequence();

@@ -1,18 +1,61 @@
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//using RestSharp;
+using RestSharp;
+using Newtonsoft.Json;
 
 public interface IResponseProvider
 {
-    // FIXME: `input` should be different type
-    public Task<string> GetResponse(string input = null);
+    public Task<string> GetResponse(string text_input = null);
+}
+
+internal static class StaticSuite
+{
+    public static readonly string LANGUAGE = "Spanish";
+    public static readonly string ANTI_LANGUAGE = "English";
+    public static readonly StructuredRequest EMPTY_INIT_STRUCTURE = null;
+    public static readonly List<string> EMPTY_CHECKPOINT_LIST = null;
+    public static readonly string CHAT_API_URL = "https://api.together.xyz/v1/chat/completions";
+    public static readonly string BEARER_STRING = "Bearer fbcc63b8b8ae920691fec7535e95d51c0d2a8296c1dc48d0789f5346a4fc5b1a";
+    public static readonly string FINISH_TOKEN = "[FINISHED]";
+
+    public static bool InitiateConversation(string input)
+    {
+        return input == null;
+    }
+
+    public static string CleanModelInput(string input)
+    {
+        Regex TMR = new(@"\s\s+");
+        string local_content = input;
+        local_content = TMR.Replace(local_content, " ").Replace("\"", "\\\"");
+        local_content = local_content.Replace("\n", "").Replace("\t", "");
+
+        // Debug.Log("Input String to API:");
+        // Debug.Log(local_content);
+
+        return local_content;
+    }
+
+    public static string RespToString(RestResponse response)
+    {
+        var responseObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+        var choices = responseObject["choices"] as Newtonsoft.Json.Linq.JArray;
+        var message = choices[0]["message"] as Newtonsoft.Json.Linq.JObject;
+        Debug.Assert(message["role"].ToString() == "assistant", "Role is not assistant");
+        var content = message["content"].ToString().Trim();
+
+        // Debug.Log("Response from API:");
+        // Debug.Log(content);
+        return content;
+    }
 }
 
 public class DummyResponseProvider : IResponseProvider
 {
-    private static string[] greetings = {
+    private static readonly string[] greetings = {
         "Hey there!",
         "Good morning!",
         "Hi, how are you?",
@@ -40,192 +83,195 @@ public class DummyResponseProvider : IResponseProvider
         "Hi, how's life treating you?"
     };
 
+    // NOTE: UNUSED: string input = null
     public async Task<string> GetResponse(string input = null)
     {
-        await Task.Delay(Random.Range(100, 1000)); // Simulate latency
-        return greetings[Random.Range(0, greetings.Length)];
+        await Task.Delay(UnityEngine.Random.Range(100, 1000)); // Simulate latency
+        string output = greetings[UnityEngine.Random.Range(0, greetings.Length)];
+        return output;
     }
 }
 
-//public class LLM_ResponseProvider : IResponseProvider
-//{
-//    private readonly LLM_API_Client _client;
-//    private readonly bool _client_initialized = false;
+public class LLM_ResponseProvider : IResponseProvider
+{
+    private readonly LLM_API_Client _client;
+    private readonly bool _client_initialized = false;
 
-//    public string response = "";
+    private readonly ActorInfo _actor_info;
+    public ActorInfo ActorInfo => _actor_info;
 
-//    // new client inside the constructor
-//    // TODO: Actor history
-//    public LLM_ResponseProvider()
-//    {
-//        _client = new LLM_API_Client();
-//        _client_initialized = true;
-//    }
+    // new client inside the constructor
+    // TODO: Actor history
+    public LLM_ResponseProvider(ActorInfo actor_info,
+                                StructuredParameter parameters = null)
+    {
+        _client = new LLM_API_Client(parameters);
+        _actor_info = actor_info;
+        _client_initialized = true;
+    }
 
-//    // FIXME: `input` should be different type
-//    public Task<string> GetResponse(string input = null)
-//    {
-//        return response = _client.SendRequest(input);
-//    }
-//}
-
-//internal class StructuredRequest
-//{
-//    private readonly string _sceneInstruction;
-//    private readonly List<string> _checkpointList;
-//    private readonly string _constraintInstruction;
-//    public string jointInstruction
-//    {
-//        get
-//        {
-//            return sceneFormat() + "\n" + checkpointFormat() + "\n" + constraintFormat();
-//        }
-//    }
-
-//    private string sceneFormat()
-//    {
-//        string _local = "You are in a scene where: ";
-//        _local += _sceneInstruction;
-//        return _local;
-//    }
-
-//    private string checkpointFormat()
-//    {
-//        string _local = "Your objective is to fulfill these checkpoints: ";
-//        for (int ckpt_num = 0; ckpt_num < checkpointList.Count; ckpt_num++)
-//        {
-//            _local += ((ckpt_num == 0) ? "" : " + ") + checkpointList[ckpt_num];
-//        }
-//        return _local;
-//    }
-
-//    private string constraintFormat()
-//    {
-//        string _local = "You must also adhere to the following constraints: ";
-//        _local += constraintInstruction;
-//        return _local;
-//    }
+    public static MetaModelInput CreateResponseGuidance(ActorInfo actor_info)
+    {
+        // Setup instruction for the model based on actor_info
+        const ModelInputState init_state = ModelInputState.USER;
+        string instruction_1 = $"Your name is {actor_info.FirstName} {actor_info.LastName}. {actor_info.Biography}";
 
 
-//    public StructuredRequest(string arg_sceneInstruction,
-//                             List<string> arg_checkpointList,
-//                             string arg_constraintInstruction)
-//    {
-//        _sceneInstruction = arg_sceneInstruction;
-//        _checkpointList = arg_checkpointList;
-//        _constraintInstruction = arg_constraintInstruction;
-//    }
-//}
+        List<string> instruction_2 = actor_info.CheckpointList;
+        string instruction_3 = $@"Now for some very important guidelines for the
+        roleplay coming up, please follow carefully. Remember you're having an
+        interactive conversation with me, so make sure you sound natural and
+        realistic. Don't be too sophisticated, you should sound organic. You
+        must only respond in {StaticSuite.LANGUAGE}. You are NOT allowed to respond in
+        {StaticSuite.ANTI_LANGUAGE}, nor should it be part of your language at all. The end
+        of each {StaticSuite.LANGUAGE} should end with this special sequence of characters:
+        '{StaticSuite.FINISH_TOKEN}'. Each of your responses should be short.
+        Only output your response to my statement. That is,
+        you should only output your dialogue, nothing else. Do not include any
+        special characters or emojis in your output. Do not output the
+        {StaticSuite.ANTI_LANGUAGE} translation. Each response you provide
+        should have exactly one question integrated at the end of your
+        short response. Alright, let's get started!";
+        StructuredRequest init_instructions = new(
+            arg_sceneInstruction: instruction_1,
+            arg_checkpointList: instruction_2,
+            arg_constraintInstruction: instruction_3
+        );
+        string init_request = "Start with the first checkpoint. You begin by asking me a question.";
+        // Get MetaModelInput object
+        MetaModelInput init_input = new(
+            arg_state: init_state,
+            arg_initRequest: init_instructions,
+            arg_responseString: init_request
+        );
 
-//internal class LLM_API_Client
-//{
-//    private RestClient _client;
+        return init_input;
+    }
 
-//    private readonly string _model;
-//    private readonly int _max_tokens;
-//    private readonly double _temperature;
-//    private readonly double _top_p = 0.7;
-//    private readonly int _top_k = 50;
-//    private readonly double _repetition_penalty = 1;
+    public async Task<string> GetResponse(string text_input = null)
+    {
+        Debug.Assert(_client_initialized, "LLM API client is not initialized");
+        MetaModelInput input_obj;
+        if (StaticSuite.InitiateConversation(text_input))
+        {
+            // This means that that we're starting a conversation for the first
+            // and should provide the initial guidance
+            Debug.Log("[Conversation LLM] Starting a new conversation");
+            input_obj = CreateResponseGuidance(_actor_info);
+        }
+        else
+        {
+            // This means that we're continuing a conversation that has already
+            // started
+            Debug.Log("[Conversation LLM] Continuing the conversation");
+            input_obj = new MetaModelInput(ModelInputState.USER,
+                                        arg_initRequest: StaticSuite.EMPTY_INIT_STRUCTURE,
+                                        arg_responseString: text_input);
+        }
+        Debug.Log($"Sending request to LLM API with input: {input_obj.JointInstruction}");
+        return await _client.SendRequest(input_obj);
+    }
+}
 
-//    public LLM_API_Client(string arg_model = "mistralai/Mixtral-8x7B-Instruct-v0.1",
-//                        int arg_max_tokens = 512, double arg_temperature = 0.7,
-//                        double arg_top_p = 0.7, int arg_top_k = 50,
-//                        double arg_repetition_penalty = 1)
-//    {
-//        _model = arg_model;
-//        _max_tokens = arg_max_tokens;
-//        _temperature = arg_temperature;
-//        _top_p = arg_top_p;
-//        _top_k = arg_top_k;
-//        _repetition_penalty = arg_repetition_penalty;
-//        init_client(null, null);
-//    }
+public class LLM_SuggestionProvider : IResponseProvider
+{
+    private readonly LLM_API_Client _client;
+    private readonly bool _client_initialized = false;
 
-//    public async Task<string> SendRequest(string input)
-//    {
-//        // FIXME: `input` should be different type
-//        var payload = new StructuredRequest(RequestMode.USER_MODE, input, null, null);
+    public LLM_SuggestionProvider(StructuredParameter parameters = null)
+    {
+        _client = new LLM_API_Client(parameters);
+        _client_initialized = true;
+    }
 
-//        var request = new RestRequest("");
-//        request.AddHeader("accept", "application/json");
-//        request.AddHeader("Authorization", "Bearer fbcc63b8b8ae920691fec7535e95d51c0d2a8296c1dc48d0789f5346a4fc5b1a");
-//        var jsonBody = new
-//        {
-//            model = _model,
-//            max_tokens = _max_tokens,
-//            stop = new[] { "</s>", "[/INST]" },
-//            temperature = _temperature,
-//            top_p = _top_p,
-//            top_k = _top_k,
-//            repetition_penalty = _repetition_penalty,
-//            n = 1,
-//            messages = new[]
-//            {
-//                new { role = payload.role, content = payload.jointInstruction }
-//            }
-//        };
+    public static MetaModelInput CreateSuggestionGuidance(string prompt_input)
+    {
+        // Setup instruction for the model based on actor_info
+        const ModelInputState conv_state = ModelInputState.USER;
+        string instruction_1 = $"Here is a prompt: \"{prompt_input}\".";
+        List<string> instruction_2 = StaticSuite.EMPTY_CHECKPOINT_LIST;
+        string instruction_3 = $"Please provide a suggestion for a possible response in {StaticSuite.LANGUAGE}. Please ensure that the response is natural and organic. Do not include any special characters or emojis in your output. Your suggestion should be fairly short. It should also strictly be a single sentence.";
+        StructuredRequest init_instructions = new(
+            arg_sceneInstruction: instruction_1,
+            arg_checkpointList: instruction_2,
+            arg_constraintInstruction: instruction_3
+        );
+        string init_request = "Please provide a suggestion now according to these constraints.";
+        // Get MetaModelInput object
+        MetaModelInput init_input = new(
+            arg_state: conv_state,
+            arg_initRequest: init_instructions,
+            arg_responseString: init_request
+        );
 
-//        request.AddJsonBody(jsonBody, false);
-//        var response = await client.PostAsync(request);
-//    }
+        return init_input;
+    }
 
-//    // Initialize the API client with StructuredRequest and StructuredParameter
-//    private void init_client(StructuredRequest request,
-//                             StructuredParameter parameter)
-//    {
-//        _client = new RestClient(new RestClientOptions(API_URL));
-//    }
-//}
+    public async Task<string> GetResponse(string prompt_input = null)
+    {
+        Debug.Assert(_client_initialized, "LLM API client is not initialized");
+        Debug.Assert(prompt_input != null, "Prompt input is null. This should never happen for suggestions.");
+        MetaModelInput prompt_obj = CreateSuggestionGuidance(prompt_input);
+        // Debug.Log($"Sending request to LLM API with input: {prompt_obj.JointInstruction}");
+        return await _client.SendRequest(prompt_obj);
+    }
+}
 
-//internal class StructuredParameter
-//{
-//    private const string API_URL = "https://api.together.xyz/v1/chat/completions";
+internal class LLM_API_Client
+{
+    private RestClient _client;
+    private readonly StructuredParameter _parameters;
 
-//    public string Model { get; set; }
-//    public int MaxTokens { get; set; }
-//    public List<string> Stop { get; set; }
-//    public double Temperature { get; set; }
-//    public double TopP { get; set; }
-//    public int TopK { get; set; }
-//    public double RepetitionPenalty { get; set; }
-//    public int N { get; set; }
+    private void SpawnClient()
+    {
+        _client = new RestClient(new RestClientOptions(StaticSuite.CHAT_API_URL));
+    }
 
-//    public StructuredParameter(double arg_temperature,
-//                               double arg_topP,
-//                               int arg_topK,
-//                               double arg_repetitionPenalty,
-//                               int arg_n,
-//                               string arg_model = API_URL,
-//                               int arg_maxTokens = 512,
-//                               List<string> arg_stop = null)
-//    {
-//        Model = arg_model;
-//        MaxTokens = arg_maxTokens;
-//        Stop = arg_stop ?? new List<string> { "</s>", "[/INST]" };
-//        Temperature = arg_temperature;
-//        TopP = arg_topP;
-//        TopK = arg_topK;
-//        RepetitionPenalty = arg_repetitionPenalty;
-//        N = arg_n;
-//    }
-//}
+    public LLM_API_Client(StructuredParameter parameters = null)
+    {
+        // Setup parameters for the model
+        _parameters = parameters ?? new StructuredParameter();
+        SpawnClient();
+    }
 
-//internal class Message
-//{
-//    public string Role { get; set; }
-//    public string Content { get; set; }
-//}
+    private RestRequest ConstructRequest(string payload_content)
+    {
+        var request = new RestRequest("");
+        request.AddHeader("accept", "application/json");
+        request.AddHeader("Authorization", StaticSuite.BEARER_STRING);
+        string jsonBody =
+        $@"{{
+            ""model"": ""{_parameters.Model}"",
+            ""max_tokens"": {_parameters.MaxTokens},
+            ""stop"": [""</s>"", ""[/INST]"", ""{StaticSuite.FINISH_TOKEN}""],
+            ""temperature"": {_parameters.Temperature},
+            ""top_p"": {_parameters.TopP},
+            ""top_k"": {_parameters.TopK},
+            ""repetition_penalty"": {_parameters.RepetitionPenalty},
+            ""n"": 1,
+            ""messages"": [
+                {{
+                ""role"": ""user"",
+                ""content"": ""{payload_content}""
+                }}
+            ]
+        }}";
+        Debug.Log(jsonBody);
 
-//// using RestSharp;
+        request.AddJsonBody(jsonBody, false);
+        return request;
+    }
 
+    public async Task<string> SendRequest(MetaModelInput payload)
+    {
+        string cleaned_payload = StaticSuite.CleanModelInput(payload.JointInstruction);
+        RestRequest request = ConstructRequest(cleaned_payload);
+        RestResponse delivery = await _client.PostAsync(request);
+        // Print the response from the API
+        Debug.Log("Response from API:");
+        Debug.Log(delivery.Content);
+        return StaticSuite.RespToString(delivery);
+    }
+}
 
-//// var options = new RestClientOptions("https://api.together.xyz/v1/chat/completions");
-//// var client = new RestClient(options);
-//// // var request = new RestRequest("");
-//// // request.AddHeader("accept", "application/json");
-//// // request.AddHeader("Authorization", "Bearer fbcc63b8b8ae920691fec7535e95d51c0d2a8296c1dc48d0789f5346a4fc5b1a");
-//// request.AddJsonBody("{\"model\":\"mistralai/Mixtral-8x7B-Instruct-v0.1\",\"max_tokens\":512,\"stop\":[\"</s>\",\"[/INST]\"],\"temperature\":0.7,\"top_p\":0.7,\"top_k\":50,\"repetition_penalty\":1,\"n\":1,\"messages\":[{\"role\":\"user\",\"content\":\"Example string\"}]}", false);
-//// var response = await client.PostAsync(request);
-
-//// Console.WriteLine("{0}", response.Content);
+// TODO: Introduce yourselves
