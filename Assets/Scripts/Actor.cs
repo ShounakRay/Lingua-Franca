@@ -173,6 +173,7 @@ public class Actor : MonoBehaviour
         suggestionsTween = DOTween.Sequence();
         if (visible)
         {
+            if (interactionState != InteractionState.ResponseRequested) return;
             string suggestion = await suggestionsProvider.GetResponse(currentPrompt);
             suggestionsText.text = suggestion;
             suggestionsTween.Append(suggestions.DOScale(suggestionsInitialScale, 0.3f));
